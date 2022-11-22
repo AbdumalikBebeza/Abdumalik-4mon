@@ -7,12 +7,12 @@
             margin-left: 25%;
         }
 
-        .comment {
+        .comments {
             width: 70%;
             margin-left: 15%;
         }
 
-        .comment > div {
+        .comments > div {
             height: 45px;
             margin-bottom: 20px;
             background: #242b2e;
@@ -21,7 +21,7 @@
 
         .author {
             color: #fff;
-            flex: 18px;
+            flex: 10px;
             font-family: sans-serif;
             font-weight: bold;
         }
@@ -29,6 +29,7 @@
         .text {
             font-size: 15px;
             font-family: sans-serif;
+            margin-bottom: 10px;
         }
 
         .post {
@@ -53,7 +54,7 @@
     </div>
     <div class="comments">
         {% for comment in comments %}
-            <div>
+            <div style="margin: 50px">
                 <p class="author">{{ comment.author.username }}</p>
                 <p class="text">{{ comment.text }}</p>
             </div>
