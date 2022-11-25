@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponse, redirect
 from .models import Post, Hashtag, Comment
-from posts.forms import PostCreateForm, CommentCreateForm
+from posts.forms import PostCreateForm, CommentCreateForm, HashtagCraeteForm
 
 
 # Create your views here.
@@ -44,8 +44,13 @@ def detail_view(request, **kwargs):
                 text=form.cleaned_data.get('text'),
                 post_id=kwargs['id']
             )
-
-            return render(request, 'posts/detail.html')
+            post = Post.objects.get(id=kwargs['id'])
+            data = {
+                'post': post,
+                'comments': Comment.objects.filter(post_id=kwargs['id']),
+                'form': CommentCreateForm
+            }
+            return render(request, 'posts/detail.html', context=data)
 
         else:
             post = Post.objects.get(id=kwargs['id'])
@@ -82,3 +87,21 @@ def posts_create_view(request):
             return render(request, 'posts/create_post.html', context=data)
 
 
+def hashtags_create_view(request):
+    if request.method == 'GET':
+        data = {
+            'form': HashtagCraeteForm
+        }
+        return render(request, 'posts/create_hashtag.html', context=data)
+    elif request.method == 'POST':
+        form = HashtagCraeteForm(data=request.POST)
+        if form.is_valid():
+            Hashtag.objects.create(
+                title=form.cleaned_data.get('title')
+            )
+            return redirect('/hashtags/')
+        else:
+            data = {
+                'form': form
+            }
+            return render(request, 'posts/create_hashtag.html', context=data)

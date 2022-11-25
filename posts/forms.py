@@ -18,5 +18,8 @@ class PostCreateForm(forms.Form):
 
 
 class CommentCreateForm(forms.Form):
-    text = forms.CharField(widget=forms.Textarea, label="добавьте комментарий")
+    text = forms.CharField(widget=forms.Textarea, label="Добавьте Комментарий")
 
+
+class HashtagCraeteForm(forms.Form):
+    title = forms.CharField(widget=forms.Textarea, max_length=150, min_length=2, label="Добавте Хэштэг")
