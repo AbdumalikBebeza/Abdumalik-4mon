@@ -1,5 +1,6 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
 from .models import Post, Hashtag, Comment
+from posts.forms import PostCreateForm, CommentCreateForm
 
 
 # Create your views here.
@@ -30,6 +31,54 @@ def detail_view(request, **kwargs):
         print(post.title)
         data = {
             'post': post,
-            'comments': Comment.objects.filter(id=kwargs['id'])
+            'comments': Comment.objects.filter(id=kwargs['id']),
+            'form': CommentCreateForm
         }
         return render(request, 'posts/detail.html', context=data)
+
+    if request.method == 'POST':
+        form = CommentCreateForm(data=request.POST)
+        if form.is_valid():
+            Comment.objects.create(
+                author_id=1,
+                text=form.cleaned_data.get('text'),
+                post_id=kwargs['id']
+            )
+
+            return render(request, 'posts/detail.html')
+
+        else:
+            post = Post.objects.get(id=kwargs['id'])
+            comment = Comment.objects.filter(post_id=post)
+            data = {
+                'post': post,
+                'comments': comment,
+                'form': CommentCreateForm
+            }
+            return render(request, 'posts/detail.html', context=data)
+
+
+def posts_create_view(request):
+    if request.method == 'GET':
+        data = {
+            'form': PostCreateForm
+        }
+        return render(request, 'posts/create_post.html', context=data)
+    if request.method == 'POST':
+        form = PostCreateForm(data=request.POST)
+        if form.is_valid():
+            Post.objects.create(
+                title=form.cleaned_data.get('title'),
+                description=form.cleaned_data.get('description'),
+                # photo=form.cleaned_data.get('photo'),
+                likes=form.cleaned_data.get('likes'),
+                hashtag=form.cleaned_data.get('hashtag')
+            )
+            return redirect('/posts')
+        else:
+            data = {
+                'form': form
+            }
+            return render(request, 'posts/create_post.html', context=data)
+
+

@@ -1,12 +1,13 @@
 from django.db import models
-from  django.contrib.auth.models import User
+from django.contrib.auth.models import User
+
 
 # Create your models here.
 class Post(models.Model):
     photo = models.ImageField()
     title = models.CharField(max_length=100)
     description = models.TextField()
-    likes = models.IntegerField(choices=((i, "*"*i) for i in range(1,6)), null=True)
+    likes = models.IntegerField(choices=((i, "*" * i) for i in range(1, 6)), null=True)
     hashtags = models.ManyToManyField('Hashtag', blank=True)
 
     def __str__(self):
