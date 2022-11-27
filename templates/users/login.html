@@ -1,13 +1,11 @@
 {% extends 'layouts/main.html' %}
 
 {% block content %}
-    <div>
-        <form action="/hashtag/create" method="post">
+    <div class="form">
+        <form action="/users/login/" method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <input type="submit" value="Create Hashtag" class="btn btn-primary">
+            <input type="submit" value="Login" class="btn btn-primary">
         </form>
     </div>
 {% endblock %}
-
-

@@ -1,7 +1,7 @@
 from django.shortcuts import render, HttpResponse, redirect
 from .models import Post, Hashtag, Comment
 from posts.forms import PostCreateForm, CommentCreateForm, HashtagCraeteForm
-
+from users.utils import get_user_from_request
 
 # Create your views here.
 def posts_view(request):
@@ -12,7 +12,8 @@ def posts_view(request):
         else:
             posts = Post.objects.all()
         context = {
-            'posts': posts
+            'posts': posts,
+            'user': get_user_from_request(request)
         }
         return render(request, 'posts/posts.html', context=context)
 
@@ -20,7 +21,8 @@ def posts_view(request):
 def hashtags_view(request, **kwargs):
     if request.method == 'GET':
         context = {
-            'hashtags': Hashtag.objects.all()
+            'hashtags': Hashtag.objects.all(),
+            'user': get_user_from_request(request)
         }
         return render(request, 'posts/hashtags.html', context=context)
 
@@ -32,7 +34,8 @@ def detail_view(request, **kwargs):
         data = {
             'post': post,
             'comments': Comment.objects.filter(id=kwargs['id']),
-            'form': CommentCreateForm
+            'form': CommentCreateForm,
+            'user': get_user_from_request(request)
         }
         return render(request, 'posts/detail.html', context=data)
 
@@ -48,7 +51,8 @@ def detail_view(request, **kwargs):
             data = {
                 'post': post,
                 'comments': Comment.objects.filter(post_id=kwargs['id']),
-                'form': CommentCreateForm
+                'form': CommentCreateForm,
+                'user': get_user_from_request(request)
             }
             return render(request, 'posts/detail.html', context=data)
 
@@ -58,7 +62,8 @@ def detail_view(request, **kwargs):
             data = {
                 'post': post,
                 'comments': comment,
-                'form': CommentCreateForm
+                'form': CommentCreateForm,
+                'user': get_user_from_request(request)
             }
             return render(request, 'posts/detail.html', context=data)
 
@@ -66,7 +71,8 @@ def detail_view(request, **kwargs):
 def posts_create_view(request):
     if request.method == 'GET':
         data = {
-            'form': PostCreateForm
+            'form': PostCreateForm,
+            'user': get_user_from_request(request)
         }
         return render(request, 'posts/create_post.html', context=data)
     if request.method == 'POST':
@@ -82,26 +88,30 @@ def posts_create_view(request):
             return redirect('/posts')
         else:
             data = {
-                'form': form
+                'form': form,
+                'user': get_user_from_request(request)
+
             }
             return render(request, 'posts/create_post.html', context=data)
 
 
-def hashtags_create_view(request):
-    if request.method == 'GET':
-        data = {
-            'form': HashtagCraeteForm
-        }
-        return render(request, 'posts/create_hashtag.html', context=data)
-    elif request.method == 'POST':
-        form = HashtagCraeteForm(data=request.POST)
-        if form.is_valid():
-            Hashtag.objects.create(
-                title=form.cleaned_data.get('title')
-            )
-            return redirect('/hashtags/')
-        else:
-            data = {
-                'form': form
-            }
-            return render(request, 'posts/create_hashtag.html', context=data)
+# def hashtags_create_view(request):
+#     if request.method == 'GET':
+#         data = {
+#             'form': HashtagCraeteForm,
+#             'user': get_user_from_request(request)
+#
+#         }
+#         return render(request, 'posts/create_hashtag.html', context=data)
+#     elif request.method == 'POST':
+#         form = HashtagCraeteForm(data=request.POST)
+#         if form.is_valid():
+#             Hashtag.objects.create(
+#                 title=form.cleaned_data.get('title')
+#             )
+#             return redirect('/hashtags/')
+#         else:
+#             data = {
+#                 'form': form
+#             }
+#             return render(request, 'posts/create_hashtag.html', context=data)
