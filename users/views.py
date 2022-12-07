@@ -11,7 +11,6 @@ def login_view(request):
         data = {
             'form': LoginForm,
             'user': get_user_from_request(request)
-
         }
         return render(request, 'users/login.html', context=data)
     if request.method == 'POST':
