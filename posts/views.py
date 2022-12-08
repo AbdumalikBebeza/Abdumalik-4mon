@@ -2,7 +2,7 @@ from django.shortcuts import render, HttpResponse, redirect
 from .models import Post, Hashtag, Comment
 from posts.forms import PostCreateForm, CommentCreateForm
 from users.utils import get_user_from_request
-from django.views.generic import ListView, CreateView, TemplateView, DetailView
+from django.views.generic import ListView, CreateView, DetailView
 PAGINATION_LIMIT = 4
 
 
